@@ -53,18 +53,12 @@ rm(list=ls())
   mycl <- makeCluster(6)
   registerDoParallel(mycl)
   
-  # pval <- foreach(i=seq(5000), .combine=c) %dopar% {
-  #   fit<-glm(train_y~train_x[,i],family="binomial")
-  #   res<-summary(fit)
-  #   pval<-res$coefficients[2,4]
-  #   return(pval)
-  # }
   pval <- foreach(i=seq(ncol(x)), .combine=c) %dopar% {
     fit<-cor(train_x[,i],train_y)
     return(abs(fit))
   }
   
-  p_pred <- p_threshold <- rep(0,14)
+  p_pred <- rep(0,14)
   
   ## select top 5,10,15,...,70 genes
   for(k in seq(5,70,by=5)){
@@ -82,18 +76,10 @@ rm(list=ls())
       return(predict(fit.final,xnew))
     }
     
-    # check <- T
-    # threshold <- 0.1
-    # while(check){
-    #   tb <- table( (expit_v(pr.est)>threshold), train_y)
-    #   if(tb[1,2]/(tb[,2] %>% sum)<=0.1) check <- F
-    #   else {check <- T; threshold <- threshold+0.05}
-    # }
+
     p_pred[k/5] <- table( (expit_v(pr.est)>0.5), train_y) %>% diag %>% sum / n
-    # p_threshold[k/5] <- threshold
   }
   
-  # dt <- data.frame(x=seq(5,70,by=5),y=p_pred,thr=p_threshold)
   dt <- data.frame(x=seq(5,70,by=5),y=p_pred)
   stopCluster(mycl)
 }
@@ -124,13 +110,10 @@ d_threshold <- function(pr.est,y,type="logit"){
   set.seed(1234)
   ll_res <- vector("list",7)
   max_dt <- dt[which(dt$y==max(dt$y)),1] %>% min
-  # max_thr <- dt[which(dt$x==max_dt),3]
-  # sel.index<-order(pval)[seq(max_dt)]
   sel.index<-order(pval,decreasing = T)[seq(max_dt)]
   fdat<-as.data.frame(cbind(train_y,train_x[,sel.index]))
   
   fit.final<-glm(train_y~.,family=binomial,data=fdat)
-  # fdat2<-as.data.frame(cbind(test_y,test_x[,sel.index]))
   fdat2<-test_x[,sel.index]
   pr.est2<-predict(fit.final,fdat2)
   thr <- d_threshold(pr.est2,test_y)
