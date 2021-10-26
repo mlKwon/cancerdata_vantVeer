@@ -138,8 +138,7 @@ d_threshold <- function(pr.est,y,type="logit"){
   dtest <- xgb.DMatrix(data = as.matrix(fdat2),label=test_y)
   # fit.final <- xgboost(data = dtrain, label = train_y, max.depth = 5,
   #         eta = 0.01, nthread = 2, nrounds = 500,objective = "binary:logistic")
-  fit.cv <- xgb.cv(params,data=dtrain,nrounds = 500, nfold = 10, obje)
-  fit.final <- xgb.train(params = params,data=dtrain,nrounds = 500, print_every_n = 10,watchlist=list(train=dtrain))
+  fit.final <- xgb.train(params = params,data=dtrain,nrounds = 500, print_every_n = 50,watchlist=list(train=dtrain))
   pr.est2<-predict(object = fit.final,newdata = dtest)
   thr <- d_threshold(pr.est2,test_y,type="boost")
   ll_res[[4]] <- table( pr.est2>thr, test_y)
