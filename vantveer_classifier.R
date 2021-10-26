@@ -93,6 +93,8 @@ d_threshold <- function(pr.est,y,type="logit"){
       boost=tb <- table( (pr.est>threshold), y),
       da=tb <- table( (pr.est$posterior[,2]>threshold), y)
     )
+    
+    # set threshold : sensitivity > 0.9 (threshold should be up to 0.1)
     if(tb[1,2]/(tb[,2] %>% sum)<=0.1 | threshold<=0.1) check <- F
     else {check <- T; threshold <- threshold-0.05}
     
