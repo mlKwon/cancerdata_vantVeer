@@ -27,9 +27,7 @@ rm(list=ls())
   dat <- dat[,-b_na] # remove na columns
 
   set.seed(1234)
-  # gene_idx <- sample(1:(ncol(dat)-1),5000) # no more need
   test_idx <- sample(1:78,size=78*0.3)
-  # dat <- dat[,c(gene_idx,ncol(dat))]       # no more need
   x <- dat[,1:(ncol(dat)-1)]; y <- dat$y
   
   if(check_valid){
