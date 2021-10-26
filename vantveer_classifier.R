@@ -180,7 +180,7 @@ ll_reg <- foreach(alp=seq(0,1,by=0.05), .packages = c("dplyr","glmnet")) %dopar%
 }
 mt_reg <- matrix(c(seq(0,1,by=0.05),ll_reg %>% sapply(function(x){return(diag(x) %>% sum / sum(x))}) %>% invisible),
                  ncol=2)
-max_alp <- mt_reg[which(mt_reg[,2]==max(mt_reg[,2])) %>% max,1]
-ll_reg[[which(mt_reg[,2]==max(mt_reg[,2])) %>% max]] # lasso
+max_alp <- mt_reg[which(mt_reg[,2]==max(mt_reg[,2])) %>% max,1] # select best alpha on regularization
+ll_reg[[which(mt_reg[,2]==max(mt_reg[,2])) %>% max]] # adjust best alpha on regularization
 stopCluster(mycl)
 
