@@ -15,7 +15,7 @@ library(glmnet)
 
 rm(list=ls())
 {
-  data(YOUNG1); check_valid <- T
+  data(YOUNG1); check_valid <- T            # comment out when you want to validate accuracy on "VEER1"
   # data(VEER); raw_dat <- VEER; check=T        # use 25,000 genes
   data(VEER1); raw_dat <- VEER1; check=F    # use 5,000 genes
   veer_dat <- raw_dat %>% as_tibble()
